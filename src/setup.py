@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name="snowalert-runners",
     version='1.0',
-    packages=['runners'],
+    packages=['runners', 'runners.helpers', 'runners.plugins'],
     install_requires=[
         'asn1crypto==0.24.0',
         'azure-common==1.1.14',
