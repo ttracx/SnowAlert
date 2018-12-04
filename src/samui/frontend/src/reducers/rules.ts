@@ -7,6 +7,7 @@ export const initialState: SnowAlertRulesState = {
   isFetching: false,
   rules: [],
   currentRuleView: null,
+  filter: null,
 };
 
 export const rules: Reducer<SnowAlertRulesState> = (

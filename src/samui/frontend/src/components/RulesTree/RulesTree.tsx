@@ -1,6 +1,7 @@
 import {
   // Icon,
   Tree,
+  Input,
 } from 'antd';
 import * as React from 'react';
 import {connect} from 'react-redux';
@@ -14,6 +15,7 @@ import {State, SnowAlertRule, SnowAlertRulesState} from '../../reducers/types';
 import './RulesTree.css';
 
 const TreeNode = Tree.TreeNode;
+const Search = Input.Search;
 
 interface OwnProps {
   target: SnowAlertRule['target'];
@@ -36,21 +38,28 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
     this.props.changeRule('');
   }
 
+  setFilter = (value: string) => {
+    this.props.rules.filter = value;
+    this.generateTree(this.props.rules.rules, this.props.target);
+  };
+
   generateTree = (rules: SnowAlertRulesState['rules'], target: SnowAlertRule['target']) => {
     const queries: Array<SnowAlertRule> = [];
     const suppressions: Array<SnowAlertRule> = [];
+    var filter = this.props.rules.filter;
 
     for (let rule of rules)
       if (rule.target === target) {
-        if (rule.type === 'QUERY') {
+        if (rule.type === 'QUERY' && (filter !== null && rule.title.includes(filter))) {
           queries.push(rule);
         }
-        if (rule.type === 'SUPPRESSION') {
+        if (rule.type === 'SUPPRESSION' && (filter !== null && rule.title.includes(filter))) {
           suppressions.push(rule);
         }
       }
 
     return [
+      <Search placeholder="Query Name" onSearch={value => this.setFilter(value)} style={{width: 200}} />,
       <TreeNode key="queries" title="Queries" selectable={false}>
         {this.props.rules.isFetching ? (
           <TreeNode title="Loading..." />
