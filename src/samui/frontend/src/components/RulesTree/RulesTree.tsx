@@ -7,7 +7,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators, Dispatch} from 'redux';
 
-import {loadSnowAlertRules, changeRule} from '../../actions/rules';
+import {loadSnowAlertRules, changeRule, changeFilter} from '../../actions/rules';
 import {getRules} from '../../reducers/rules';
 
 import {State, SnowAlertRule, SnowAlertRulesState} from '../../reducers/types';
@@ -59,7 +59,6 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
       }
 
     return [
-      <Search placeholder="Query Name" onSearch={value => this.setFilter(value)} style={{width: 200}} />,
       <TreeNode key="queries" title="Queries" selectable={false}>
         {this.props.rules.isFetching ? (
           <TreeNode title="Loading..." />
@@ -88,9 +87,12 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
   render() {
     var rules = this.props.rules.rules;
     return (
-      <Tree showLine defaultExpandAll onSelect={x => this.props.changeRule(x[0] || '')}>
-        {this.generateTree(rules, this.props.target)}
-      </Tree>
+      <div>
+        <Search placeholder="Query Name" onSearch={value => changeFilter(value)} style={{width: 200}} />
+        <Tree showLine defaultExpandAll onSelect={x => this.props.changeRule(x[0] || '')}>
+          {this.generateTree(rules, this.props.target)}
+        </Tree>
+      </div>
     );
   }
 }
