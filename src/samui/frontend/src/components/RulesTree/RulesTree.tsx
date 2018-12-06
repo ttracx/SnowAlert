@@ -24,6 +24,7 @@ interface OwnProps {
 interface DispatchProps {
   loadSnowAlertRules: typeof loadSnowAlertRules;
   changeRule: typeof changeRule;
+  changeFilter: typeof changeFilter;
 }
 
 interface StateProps {
@@ -38,22 +39,17 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
     this.props.changeRule('');
   }
 
-  setFilter = (value: string) => {
-    this.props.rules.filter = value;
-    this.generateTree(this.props.rules.rules, this.props.target);
-  };
-
   generateTree = (rules: SnowAlertRulesState['rules'], target: SnowAlertRule['target']) => {
     const queries: Array<SnowAlertRule> = [];
     const suppressions: Array<SnowAlertRule> = [];
-    var filter = this.props.rules.filter;
+    var filter = this.props.rules.filter || '';
 
     for (let rule of rules)
       if (rule.target === target) {
-        if (rule.type === 'QUERY' && (filter !== null && rule.title.includes(filter))) {
+        if (rule.type === 'QUERY' && (filter === null || rule.title.includes(filter.toUpperCase()))) {
           queries.push(rule);
         }
-        if (rule.type === 'SUPPRESSION' && (filter !== null && rule.title.includes(filter))) {
+        if (rule.type === 'SUPPRESSION' && (filter === null || rule.title.includes(filter.toUpperCase()))) {
           suppressions.push(rule);
         }
       }
@@ -88,7 +84,7 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
     var rules = this.props.rules.rules;
     return (
       <div>
-        <Search placeholder="Query Name" onSearch={value => changeFilter(value)} style={{width: 200}} />
+        <Search placeholder="Query Name" onSearch={this.props.changeFilter} style={{width: 200}} />
         <Tree showLine defaultExpandAll onSelect={x => this.props.changeRule(x[0] || '')}>
           {this.generateTree(rules, this.props.target)}
         </Tree>
@@ -108,6 +104,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     {
       loadSnowAlertRules: loadSnowAlertRules,
       changeRule,
+      changeFilter,
     },
     dispatch,
   );

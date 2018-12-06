@@ -73,7 +73,7 @@ export const rules: Reducer<SnowAlertRulesState> = (
     case RulesActions.CHANGE_CURRENT_FILTER:
       return {
         ...state,
-        rules: state.rules.map(r => Object.assign(r, {filter: action.payload})),
+        filter: action.payload,
       };
   }
   return state;
