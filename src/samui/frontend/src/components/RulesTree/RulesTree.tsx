@@ -46,10 +46,10 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
 
     for (let rule of rules)
       if (rule.target === target) {
-        if (rule.type === 'QUERY' && (filter === null || rule.title.includes(filter.toUpperCase()))) {
+        if (rule.type === 'QUERY' && (filter == '' || rule.title.includes(filter.toUpperCase()))) {
           queries.push(rule);
         }
-        if (rule.type === 'SUPPRESSION' && (filter === null || rule.title.includes(filter.toUpperCase()))) {
+        if (rule.type === 'SUPPRESSION' && (filter == '' || rule.title.includes(filter.toUpperCase()))) {
           suppressions.push(rule);
         }
       }
@@ -84,7 +84,7 @@ class RulesTree extends React.PureComponent<RulesTreeProps> {
     var rules = this.props.rules.rules;
     return (
       <div>
-        <Search placeholder="Query Name" onSearch={this.props.changeFilter} style={{width: 200}} />
+        <Search placeholder="Query Name" onChange={e => this.props.changeFilter(e.target.value)} style={{width: 200}} />
         <Tree showLine defaultExpandAll onSelect={x => this.props.changeRule(x[0] || '')}>
           {this.generateTree(rules, this.props.target)}
         </Tree>
